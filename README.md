@@ -6,7 +6,7 @@ DoubleBagFTPS extends the core Net::FTP class to provide implicit and explicit F
 Install
 -------
 
-    $ [sudo] gem install doublebagftps
+    $ [sudo] gem install double-bag-ftps
 
 Usage
 -----
