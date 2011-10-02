@@ -40,7 +40,8 @@ class DoubleBagFTPS < Net::FTP
   # Allow @ftps_mode to be set when @sock is not connected
   #
   def ftps_mode=(ftps_mode)
-    if @sock.kind_of?(NullSocket) || @sock.closed?
+    # Ruby 1.8.7/1.9.2 compatible check
+    if (defined?(NullSocket) && @sock.kind_of?(NullSocket)) || @sock.nil? || @sock.closed?
       raise ArgumentError unless valid_ftps_mode?(ftps_mode)
       @ftps_mode = ftps_mode
     else
