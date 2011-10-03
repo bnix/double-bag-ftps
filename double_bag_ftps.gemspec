@@ -15,10 +15,4 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler"
   s.add_development_dependency "rspec"
-
-  begin
-    require 'openssl'
-  rescue LoadError
-    s.post_install_message = "*WARNING: Your Ruby installation is not compiled with OpenSSL support! FTPS will not work without OpenSSL."
-  end
 end
