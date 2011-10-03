@@ -5,25 +5,25 @@ rescue LoadError
 end
 
 class DoubleBagFTPS < Net::FTP
-  FTPS_EXPLICIT = :explicit
-  FTPS_IMPLICIT = :implicit
-  FTPS_IMPLICIT_PORT = 990
+  EXPLICIT = :explicit
+  IMPLICIT = :implicit
+  IMPLICIT_PORT = 990
 
-  # The form of FTPS that should be used. Either FTPS_EXPLICIT or FTPS_IMPLICIT.
-  # Defaults to FTPS_EXPLICIT.
+  # The form of FTPS that should be used. Either EXPLICIT or IMPLICIT.
+  # Defaults to EXPLICIT.
   attr_reader :ftps_mode
 
   # The OpenSSL::SSL::SSLContext to use for creating all OpenSSL::SSL::SSLSocket objects.
   attr_accessor :ssl_context
 
-  def initialize(host = nil, user = nil, passwd = nil, acct = nil, ftps_mode = FTPS_EXPLICIT, ssl_context_params = {})
+  def initialize(host = nil, user = nil, passwd = nil, acct = nil, ftps_mode = EXPLICIT, ssl_context_params = {})
     raise ArgumentError unless valid_ftps_mode?(ftps_mode)
     @ftps_mode = ftps_mode
     @ssl_context = DoubleBagFTPS.create_ssl_context(ssl_context_params)
     super(host, user, passwd, acct)
   end
 
-  def DoubleBagFTPS.open(host, user = nil, passwd = nil, acct = nil, ftps_mode = FTPS_EXPLICIT, ssl_context_params = {})
+  def DoubleBagFTPS.open(host, user = nil, passwd = nil, acct = nil, ftps_mode = EXPLICIT, ssl_context_params = {})
     if block_given?
       ftps = new(host, user, passwd, acct, ftps_mode, ssl_context_params)
       begin
@@ -53,7 +53,7 @@ class DoubleBagFTPS < Net::FTP
   # Establishes the command channel.
   # Override parent to record host name for verification, and allow default implicit port.
   #
-  def connect(host, port = ftps_implicit? ? FTPS_IMPLICIT_PORT : FTP_PORT)
+  def connect(host, port = ftps_implicit? ? IMPLICIT_PORT : FTP_PORT)
     @hostname = host
     super
   end
@@ -130,11 +130,11 @@ class DoubleBagFTPS < Net::FTP
   end
   private :transfercmd
 
-  def ftps_explicit?; @ftps_mode == FTPS_EXPLICIT end
-  def ftps_implicit?; @ftps_mode == FTPS_IMPLICIT end
+  def ftps_explicit?; @ftps_mode == EXPLICIT end
+  def ftps_implicit?; @ftps_mode == IMPLICIT end
 
   def valid_ftps_mode?(mode)
-    mode == FTPS_EXPLICIT || mode == FTPS_IMPLICIT
+    mode == EXPLICIT || mode == IMPLICIT
   end
   private :valid_ftps_mode?
 

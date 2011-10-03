@@ -31,7 +31,7 @@ describe DoubleBagFTPS do
   context "implicit" do
     before(:each) do
       @ftp = DoubleBagFTPS.new
-      @ftp.ftps_mode = DoubleBagFTPS::FTPS_IMPLICIT
+      @ftp.ftps_mode = DoubleBagFTPS::IMPLICIT
       @ftp.passive = true
       @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
     end
@@ -46,7 +46,7 @@ describe DoubleBagFTPS do
   context "explicit" do
     before(:each) do
     	@ftp = DoubleBagFTPS.new
-    	@ftp.ftps_mode = DoubleBagFTPS::FTPS_EXPLICIT
+    	@ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       @ftp.passive = true
     	@ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
     end
