@@ -40,6 +40,12 @@ describe DoubleBagFTPS do
       @ftp.close unless @ftp.welcome.nil?
     end
 
+    it "uses an SSLSocket when first connected" do
+      @ftp.connect(HOST)
+      @ftp.instance_eval {def socket; @sock; end}
+      @ftp.socket.should be_an_instance_of OpenSSL::SSL::SSLSocket
+    end
+
     it_should_behave_like "DoubleBagFTPS"
   end
 
@@ -53,6 +59,12 @@ describe DoubleBagFTPS do
 
     after(:each) do
     	@ftp.close unless @ftp.welcome.nil?
+    end
+
+    it "does not use an SSLSocket when first connected" do
+      @ftp.connect(HOST)
+      @ftp.instance_eval {def socket; @sock; end}
+      @ftp.socket.should_not be_an_instance_of OpenSSL::SSL::SSLSocket
     end
 
     it_should_behave_like "DoubleBagFTPS"
