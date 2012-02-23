@@ -18,11 +18,11 @@ shared_examples_for "DoubleBagFTPS" do
 
   it "prevents setting the FTPS mode while connected" do
     @ftp.connect(HOST)
-    lambda {@ftp.ftps_mode = 'dummy value'}.should raise_error
+    lambda {@ftp.ftps_mode = DoubleBagFTPS::IMPLICIT}.should raise_error RuntimeError
   end
 
   it "prevents setting the FTPS mode to an unrecognized value" do
-    lambda {@ftp.ftps_mode = 'dummy value'}.should raise_error
+    lambda {@ftp.ftps_mode = 'dummy value'}.should raise_error ArgumentError
   end
 
 end
