@@ -150,9 +150,37 @@ class DoubleBagFTPS < Net::FTP
     unless @ssl_context.verify_mode == OpenSSL::SSL::VERIFY_NONE
       sock.post_connection_check(@hostname)
     end
+    decorate_socket sock
     return sock
   end
   private :ssl_socket
+
+  # Ruby 2.0's Ftp class closes sockets by first doing a shutdown,
+  # setting the read timeout, and doing a read.  OpenSSL doesn't
+  # have those methods, so fake it.
+  #
+  # Ftp calls #close in an ensure block, so the socket will still get
+  # closed.
+
+  def decorate_socket(sock)
+
+    def sock.shutdown(how)
+      @shutdown = true
+    end
+
+    def sock.read_timeout=(seconds)
+    end
+
+    # Skip read after shutdown.  Prevents 2.0 from hanging in
+    # Ftp#close
+
+    def sock.read(*args)
+      return if @shutdown
+      super(*args)
+    end
+
+  end
+  private :decorate_socket
 
   def DoubleBagFTPS.create_ssl_context(params = {})
     raise 'SSL extension not installed' unless defined?(OpenSSL)
@@ -160,5 +188,5 @@ class DoubleBagFTPS < Net::FTP
     context.set_params(params)
     return context
   end
-  
+
 end
