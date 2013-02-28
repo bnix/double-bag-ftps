@@ -16,6 +16,18 @@ shared_examples_for "DoubleBagFTPS" do
     @ftp.send(:transfercmd, 'nlst').should be_an_instance_of OpenSSL::SSL::SSLSocket
   end
 
+  it "can retrieve a file" do
+    Dir.mktmpdir do |temp_dir|
+      @ftp.connect HOST
+      @ftp.login USR, PASSWD
+      filename = @ftp.nlst.first
+      filename.should_not be_nil
+      local_path = File.join(temp_dir, filename)
+      @ftp.get(filename, local_path)
+      File.exists?(local_path).should be_true
+    end
+  end
+
   it "prevents setting the FTPS mode while connected" do
     @ftp.connect(HOST)
     lambda {@ftp.ftps_mode = DoubleBagFTPS::IMPLICIT}.should raise_error RuntimeError
