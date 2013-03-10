@@ -6,14 +6,26 @@ shared_examples_for "DoubleBagFTPS" do
   end
 
   it "logs in with a user name and password" do
-  	@ftp.connect(HOST)
+    @ftp.connect(HOST)
     lambda {@ftp.login(USR, PASSWD)}.should_not raise_error
   end
 
   it "can open a secure data channel" do
-  	@ftp.connect(HOST)
+    @ftp.connect(HOST)
     @ftp.login(USR, PASSWD)
     @ftp.send(:transfercmd, 'nlst').should be_an_instance_of OpenSSL::SSL::SSLSocket
+  end
+
+  it "can retrieve a file" do
+    Dir.mktmpdir do |temp_dir|
+      @ftp.connect HOST
+      @ftp.login USR, PASSWD
+      filename = @ftp.nlst.first
+      filename.should_not be_nil
+      local_path = File.join(temp_dir, filename)
+      @ftp.get(filename, local_path)
+      File.exists?(local_path).should be_true
+    end
   end
 
   it "prevents setting the FTPS mode while connected" do
@@ -51,14 +63,14 @@ describe DoubleBagFTPS do
 
   context "explicit" do
     before(:each) do
-    	@ftp = DoubleBagFTPS.new
-    	@ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
+      @ftp = DoubleBagFTPS.new
+      @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       @ftp.passive = true
-    	@ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+      @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
     end
 
     after(:each) do
-    	@ftp.close unless @ftp.welcome.nil?
+      @ftp.close unless @ftp.welcome.nil?
     end
 
     it "does not use an SSLSocket when first connected" do
