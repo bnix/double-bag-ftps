@@ -121,10 +121,9 @@ class DoubleBagFTPS < Net::FTP
       if resp[0] != ?1
         raise FTPReplyError, resp
       end
-
-      temp_ssl_sock = ssl_socket(sock)
-      conn = temp_ssl_sock.accept
-      temp_ssl_sock.close
+      conn = sock.accept
+      conn = ssl_socket(conn)
+      sock.close
     end
     return conn
   end
