@@ -3,7 +3,8 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "double-bag-ftps"
-  s.version     = "0.1.0"
+  s.version     = "0.1.1"
+  s.license     = "MIT"
   s.author      = "Bryan Nix"
   s.homepage    = "https://github.com/bnix/double-bag-ftps"
   s.summary     = "Provides a child class of Net::FTP to support implicit and explicit FTPS."
