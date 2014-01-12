@@ -143,12 +143,16 @@ class DoubleBagFTPS < Net::FTP
   def ssl_socket(sock)
     raise 'SSL extension not installed' unless defined?(OpenSSL)
     sock = OpenSSL::SSL::SSLSocket.new(sock, @ssl_context)
+    if @ssl_session
+      sock.session = @ssl_session
+    end
     sock.sync_close = true
     sock.connect
     print "get: #{sock.peer_cert.to_text}" if @debug_mode
     unless @ssl_context.verify_mode == OpenSSL::SSL::VERIFY_NONE
       sock.post_connection_check(@hostname)
     end
+    @ssl_session = sock.session
     decorate_socket sock
     return sock
   end
