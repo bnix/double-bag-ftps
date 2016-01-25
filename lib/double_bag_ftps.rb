@@ -109,6 +109,10 @@ class DoubleBagFTPS < Net::FTP
       conn = ssl_socket(conn) # SSL connection now possible after cmd sent
     else
       sock = makeport
+      # Before ruby-2.3.0, makeport did a sendport automatically
+      if RUBY_VERSION >= "2.3"
+        sendport(sock.addr[3], sock.addr[1])
+      end
       if @resume and rest_offset
         resp = sendcmd('REST ' + rest_offset.to_s)
         if resp[0] != ?3
