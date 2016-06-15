@@ -1,4 +1,11 @@
+## 0.1.3
+
+Bugfixes:
+
+  - Active mode transfers send proper commands with Ruby > 2.2.2
+
 ## 0.1.2
+
 Bugfixes:
 
   - Reuse SSL session when creating new sockets
