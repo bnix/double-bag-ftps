@@ -30,7 +30,7 @@ class DoubleBagFTPS < Net::FTP
       begin
         yield ftps
       ensure
-        ftps.close
+        ftps.close unless ftps.closed?
       end
     else
       new(host, user, passwd, acct, ftps_mode, ssl_context_params)
