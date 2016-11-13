@@ -110,10 +110,7 @@ class DoubleBagFTPS < Net::FTP
       conn = ssl_socket(conn) # SSL connection now possible after cmd sent
     else
       sock = makeport
-      # Before ruby-2.2.3, makeport did a sendport automatically
-      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.2.3")
-        sendport(sock.addr[3], sock.addr[1])
-      end
+      sendport(sock.addr[3], sock.addr[1]) if sendport_needed?
       if @resume and rest_offset
         resp = sendcmd('REST ' + rest_offset.to_s)
         if resp[0] != ?3
@@ -133,6 +130,19 @@ class DoubleBagFTPS < Net::FTP
     return conn
   end
   private :transfercmd
+
+  # Before ruby-2.2.3, makeport called sendport automatically.  After
+  # Ruby 2.3.0, makeport does not call sendport automatically, so do
+  # it ourselves.  This change to Ruby's FTP lib has been backported
+  # to Ruby 2.1 since version 2.1.7.
+  def sendport_needed?
+    @sendport_needed ||= begin
+      Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.2.3") ||
+      Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.7") &&
+      Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.2.0")
+    end
+  end
+  private :sendport_needed?
 
   def ftps_explicit?; @ftps_mode == EXPLICIT end
   def ftps_implicit?; @ftps_mode == IMPLICIT end
