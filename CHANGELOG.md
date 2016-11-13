@@ -1,8 +1,15 @@
+## 0.1.4
+
+Buffixes:
+
+- Fix active mode transfers hanging in some versions of Ruby 2.1
+
 ## 0.1.3
 
 Bugfixes:
 
-  - Active mode transfers send proper commands with Ruby > 2.2.2
+- Fix active mode transfers hanging in some versions of Ruby 2.2 and
+  2.3
 
 ## 0.1.2
 
